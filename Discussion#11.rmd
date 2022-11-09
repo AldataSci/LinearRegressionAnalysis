@@ -1,0 +1,85 @@
+---
+title: "Discussion Board Week 11"
+author: "Al Haque"
+date: '2022-10-31'
+output: html_document
+---
+
+```{r include= FALSE}
+library(tidyverse)
+```
+
+### Reading the data
+This dataset I found on kaggle after browsing google for dataset that I can create a linear regression for. This dataset contains 
+rows of houses in Taiwan that gives information about the house,its distance from MRt,longitude and latitude and the price.I
+created a regression model where it creates a model on the input(The age of the house) and it predicts the output(price of the house)
+
+
+```{r}
+Data <- read.csv("https://raw.githubusercontent.com/AldataSci/LinearRegressionAnalysis/main/Real%20estate.csv",header=TRUE)
+head(Data)
+```
+
+
+### Building the Model
+
+```{r}
+## lets build a simple regression model where we try to predict the price of the house with the age of the house as a predictor..
+## lets make meaningful column names!
+colnames(Data) <- c("Index","Transaction_Date","House_Age","distance_to_nearest MRT station","#of_convience_stores","latitude","longitude","Price_of_Unit")
+head(Data)
+```
+```{r}
+## lets create a simple linear regression model where the inputs for the model is the age of the house and the output are the price of the unit
+house_model <- lm(Data$Price_of_Unit ~ Data$House_Age,data = Data)
+```
+
+
+```{r}
+## The equation of the regression model is: price of the house = 42.4347 -0.2515 * House_Age
+house_model
+```
+
+### Visualizing the Data
+
+```{r}
+plot(Data$Price_of_Unit ~ Data$House_Age,data = Data)
+abline(house_model)
+```
+
+
+### Interpreting the model
+
+```{r}
+## The median is somewhat near 0 and the age of the age plays a big factor in the price of the house which may suggest that 
+## the age of house plays a role in the price of the house but the R^2 is a really small value which shows that the model may not be 
+## a fit the data at all. 
+summary(house_model)
+```
+
+-----
+
+### Residual Analysis:
+
+```{r}
+## There is no clear trend within our residuals this may suggest that the predictor of the age of the house may be useful 
+## in sufficently and explaining the data. (pg 23 in textbook)
+plot(fitted(house_model),resid(house_model))
+```
+
+-----
+
+### Q-Q plots
+
+```{r}
+## we can create a qqplot to determine if the model fits the data well, we should expect to see the residuals to be normally
+#distributed
+qqnorm(resid(house_model))
+qqline(resid(house_model))
+```
+
+There are some slight divergence at the front end and at the bottom end, the tail front left tail is "lighter" than what we expected
+and some of the observation on the right tail is "heavier" than what we expected.
+
+----
+
